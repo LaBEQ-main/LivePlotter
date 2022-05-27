@@ -36,4 +36,4 @@ enamldef Main(Window): window:
         PushButton: addb:
             text = 'add'
             clicked ::
-                window.filedict[window.path] = window.pair
+                plotter.filedict[window.path] = window.pair
