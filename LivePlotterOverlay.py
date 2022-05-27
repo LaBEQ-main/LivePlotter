@@ -29,8 +29,11 @@ y_vals = []
 index = count()
 
 class LivePlotter():
-    filedict ={}
-    overlay_bool = False
+    filedict = {}
+    overlay_bool = bool
+
+    def convertfilepath(self, filepath):
+        return filepath.replace('/',"\\")
 
     def start(self, file, vars):
         global xcol, ycol, f, fname
@@ -59,17 +62,17 @@ class LivePlotter():
         plt.legend(loc='upper right')
         plt.tight_layout()
 
-    def start_overlay(self, filedict):
+    def start_overlay(self):
         global x, y, fdict, namedict
-        fdict = filedict
+        fdict = self.filedict
         namedict = {}
         x = {}
         y = {}
         
         
         print('Plotting overlay using: ')
-        for file in filedict:
-            print(filedict[file],'data from: ',file)
+        for file in fdict:
+            print(fdict[file],'data from: ',file)
             fname = file.split("\\")[-1]
             namedict[file] = fname
         
@@ -98,14 +101,25 @@ class LivePlotter():
             plt.legend(loc='upper right')
             plt.tight_layout()
 
+    def start_plot(self):
+        if self.overlay_bool == False:
+            for file in self.filedict:
+                print(file)
+                vars = self.filedict[file]
+                Process(target=self.start, args=(file, vars)).start()
+        else:
+            #Need to put a comma after dict passed into process for some reason. Not sure why.
+            Process(target=self.start_overlay, args=()).start()
+
+
 
 def main():
     print('CPU core count: ', os.cpu_count())
 
     lplot = LivePlotter()
-    lplot.overlay_bool = True
-    lplot.filedict = {'C:\\Users\\2administrator\\exopy\\tests\\LivePlottingTest\\ot1.csv': ('x', 'y'),
-                'C:\\Users\\2administrator\\exopy\\tests\\LivePlottingTest\\ot2.csv': ('x', 'y')}
+    lplot.overlay_bool = False
+    lplot.filedict = {'C:\\Users\\fduff\\source\\repos\\LivePlotter\\Test Data\\ot1.csv' : ('x', 'y'),
+                'C:\\Users\\fduff\source\\repos\\LivePlotter\\Test Data\\ot2.csv' : ('x', 'y')}
 
 
     if lplot.overlay_bool == False:
@@ -115,7 +129,7 @@ def main():
             Process(target=lplot.start, args=(file, vars)).start()
     else:
         #Need to put a comma after dict passed into process for some reason. Not sure why.
-        Process(target=lplot.start_overlay, args=(lplot.filedict,)).start()
+        Process(target=lplot.start_overlay, args=()).start()
 
 if __name__ == '__main__':
     main()
