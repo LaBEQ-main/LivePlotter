@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 
-from enaml.layout.api import hbox, align
+from enaml.layout.api import vbox, hbox, align
 from enaml.widgets.api import (
     Container, Field, FileDialogEx, Label, PushButton, Window,
-    ObjectCombo,
+    ObjectCombo, MultilineField
 )
 
 
@@ -15,9 +15,12 @@ enamldef Main(Window): window:
     attr pair = ()
     attr filedict = {}
     title = 'Live Plotter'
-    Container:
+    Container: c1:
         constraints = [
-            hbox(lbl1, fld1, pb1, lbl2, fld2, lbl3, fld3, pb2, lbl4, oc1, pb3),
+            vbox(
+                hbox(lbl1, fld1, pb1, lbl2, fld2, lbl3, fld3, pb2, lbl4, oc1, pb3),
+                fld4,
+            ),
             align('v_center', lbl1, fld1, pb1, lbl2, fld2, lbl3, fld3, pb2, lbl4, oc1, pb3),
             pb1.height == fld1.height,
             pb2.height == fld2.height,
@@ -62,3 +65,6 @@ enamldef Main(Window): window:
                 # plotter.overlay_bool = False
                 plotter.filedict = window.filedict
                 plotter.start_plot()
+        Field: fld4:
+            text << path
+            
