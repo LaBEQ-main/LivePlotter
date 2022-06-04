@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 from enaml.layout.api import vbox, hbox, align
 from enaml.widgets.api import (
     Container, Field, FileDialogEx, Label, PushButton, Window,
-    ObjectCombo, MultilineField
+    ObjectCombo, MultilineField, HGroup, VGroup, Separator
 )
-
+from enaml.core.api import Include
 
 enamldef Main(Window): window:
     attr plotter
@@ -14,20 +14,57 @@ enamldef Main(Window): window:
     attr Y = ""
     attr pair = ()
     attr filedict = {}
+    attr fcount = 0
+
     title = 'Live Plotter'
     Container: c1:
         constraints = [
             vbox(
-                hbox(lbl1, fld1, pb1, lbl2, fld2, lbl3, fld3, pb2, lbl4, oc1, pb3),
-                fld4,
+                hbox(lbl1, fld1, pb1, lbl2, fld2, lbl3, fld3, pb2, lbl4, oc1, pb3, clearbtn),
+                sep,
+                hbox(vg1, vg2, vg3),
+                #hbox(clearbtn),
             ),
-            align('v_center', lbl1, fld1, pb1, lbl2, fld2, lbl3, fld3, pb2, lbl4, oc1, pb3),
+
+            width == 1000,
+            align('v_center', lbl1, fld1, pb1, lbl2, fld2, lbl3, fld3, pb2, lbl4, oc1, pb3, clearbtn),
+            contents_top == lbl1.top,
+            contents_left == lbl1.left,
+            #contents_right == pb3.right,
+            fld1.width == 0.30 * width,
+            fld2.width == 0.05 * width,
+            fld3.width == 0.05 * width,
             pb1.height == fld1.height,
             pb2.height == fld2.height,
             pb3.height == fld2.height,
+
+            align('width', pb1, pb2, pb3, oc1, clearbtn),
+            #align('v_center', filelistlbl, xlistlbl, ylistlbl, clearbtn),
+            #filelistlbl.width == width * .2,
+            #xlistlbl.width == width * .3,
+            #ylistlbl.width == width * .3,
+            #clearbtn.width == pb3.width,
+
+            align('height', vg1, vg2, vg3),
+            #vg1.left == contents_left,
+            #vg1.width == 0.60 * width,
+            #vg2.width == 0.18 * width,
+            #vg3.width == 0.18 * width,
+            #align('height', inc1.objects, inc4.objects)
+            #vg1.right == xlistlbl.left,
+            #vg1.right == fld3.right,
+            #vg2.left == xlistlbl.left,
+            #vg3.right == pb3.right,
+            #vg4.right == contents_right,
+
+            align('right', clearbtn),
+
+
+       
+           
         ]
         Label: lbl1:
-            text = 'File'
+            text = 'File:'
         Field: fld1:
             read_only = True
             text << window.path
@@ -40,19 +77,26 @@ enamldef Main(Window): window:
                     path = plotter.convertfilepath(path)
                     window.path = path
         Label: lbl2:
-            text = 'X'
+            text = 'X:'
         Field: fld2:
             text := window.X
+
         Label: lbl3:
-            text = 'Y'
+            text = 'Y:'
         Field: fld3:
             text := window.Y
+
         PushButton: pb2:
             text = 'Add'
             clicked ::
-                #form dict from path and x and y and add to window.dict
-                window.filedict[window.path] = (window.X, window.Y)
-                print(f"window.filedict {window.filedict}")
+
+                window.fcount = window.fcount + 1
+                #add entered file and coords to list of files to plot.
+                inc1.objects.append(Field(text=str(window.path)))
+                inc2.objects.append(Field(text=window.X, hug_width="strong"))
+                inc3.objects.append(Field(text=window.Y, hug_width="strong"))
+                #inc4.objects.append(PushButton(text="Remove", hug_width="strong", clicked :: print(count)))
+                
         Label: lbl4:
             text = 'Plot Overlay:'
         ObjectCombo: oc1:
@@ -61,10 +105,49 @@ enamldef Main(Window): window:
         PushButton: pb3:
             text = 'Plot'
             clicked ::
-                #give dict to start
-                # plotter.overlay_bool = False
+                #construct the dict of files and coordinates to plot
+                for i in range(len(inc1.objects)):
+                    window.filedict[inc1.objects[i].text] = (inc2.objects[i].text, inc3.objects[i].text)
+
+                #hand the filedict given by the user to the plotter 
                 plotter.filedict = window.filedict
+
+                #start the plot
                 plotter.start_plot()
-        Field: fld4:
-            text << path
+        
+        Separator: sep:
+            pass
+
+        VGroup: vg1:
+            spacing = 2
+            padding = 0
+            Label: filelistlbl:
+                text = "Files to plot:"
+            Include: inc1:
+                objects = []
+
+        VGroup: vg2:
+            spacing = 2
+            padding = 0
+            Label: xlistlbl:
+                text = "X"
+            Include: inc2:
+                objects = []
+
+        VGroup: vg3:
+            spacing = 2
+            padding = 0
+            Label: ylistlbl:
+                text = "Y"
+            Include: inc3:
+                objects = []
+
+        PushButton: clearbtn:
+            text = 'Clear All'
+            clicked ::
+                inc1.objects = []
+                inc2.objects = []
+                inc3.objects = []
+
+        
             
