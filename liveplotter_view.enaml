@@ -148,6 +148,7 @@ enamldef Main(Window): window:
                 inc1.objects = []
                 inc2.objects = []
                 inc3.objects = []
+                plotter.filedict.clear()
 
         
             
