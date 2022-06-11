@@ -13,7 +13,7 @@ enamldef Main(Window): window:
     attr X = ""
     attr Y = ""
     attr pair = ()
-    attr filedict = {}
+    attr plotlist = []
     attr fcount = 0
 
     title = 'Live Plotter'
@@ -107,10 +107,10 @@ enamldef Main(Window): window:
             clicked ::
                 #construct the dict of files and coordinates to plot
                 for i in range(len(inc1.objects)):
-                    window.filedict[inc1.objects[i].text] = (inc2.objects[i].text, inc3.objects[i].text)
+                    window.plotlist.append([inc1.objects[i].text, (inc2.objects[i].text, inc3.objects[i].text)])
 
                 #hand the filedict given by the user to the plotter 
-                plotter.filedict = window.filedict
+                plotter.plotlist = window.plotlist
 
                 #start the plot
                 plotter.start_plot()
@@ -148,7 +148,7 @@ enamldef Main(Window): window:
                 inc1.objects = []
                 inc2.objects = []
                 inc3.objects = []
-                plotter.filedict.clear()
+                plotter.plotlist.clear()
 
         
             
