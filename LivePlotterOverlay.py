@@ -100,7 +100,7 @@ class LivePlotter():
             plt.xlabel(str(xcol))
             plt.ylabel(str(ycol))
             plt.title(f"Live Overlay")
-            plt.plot(x, y, label = namedict[file])
+            plt.plot(x, y, label = ycol)
             plt.legend(loc='best')
             
         
