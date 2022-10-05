@@ -31,7 +31,7 @@ index = count()
 class LivePlotter():
     plotlist = []
     overlay_bool = bool
-    paused = bool
+    paused = False
 
     def convertfilepath(self, filepath):
         return filepath.replace('/',"\\")
