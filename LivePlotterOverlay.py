@@ -96,6 +96,8 @@ class LivePlotter():
             self.ani.resume()
         else:
             self.ani.pause()
+
+        #toggle paused bool
         self.paused = not self.paused
 
     def animate_overlay(self, i):
