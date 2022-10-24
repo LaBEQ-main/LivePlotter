@@ -114,6 +114,9 @@ enamldef Main(Window): window:
 
                 #start the plot
                 plotter.start_plot()
+
+                #clear plot list after plot
+                plotter.plotlist.clear()
         
         Separator: sep:
             pass
