@@ -31,6 +31,7 @@ index = count()
 class LivePlotter():
     plotlist = []
     overlay_bool = bool
+    paused = False
 
     def convertfilepath(self, filepath):
         return filepath.replace('/',"\\")
@@ -44,7 +45,11 @@ class LivePlotter():
 
         print('plotting',xcol,',',ycol,'data from: ',file)
         fig = plt.figure()
-        ani = FuncAnimation(fig, self.animate, interval=500)
+        self.ani = FuncAnimation(fig, self.animate, interval=500)
+        
+        #allow plot to pause on click
+        fig.canvas.mpl_connect('button_press_event', self.toggle_pause)
+
         plt.tight_layout()
         plt.show()
 
@@ -78,9 +83,22 @@ class LivePlotter():
             namedict[file] = fname
         
         fig = plt.figure()
-        ani = FuncAnimation(fig, self.animate_overlay, interval=500)
+        self.ani = FuncAnimation(fig, self.animate_overlay, interval=500)
+
+        #allow plot to pause on click
+        fig.canvas.mpl_connect('button_press_event', self.toggle_pause)
+
         plt.tight_layout()
         plt.show()
+
+    def toggle_pause(self, *args, **kwargs):
+        if self.paused:
+            self.ani.resume()
+        else:
+            self.ani.pause()
+
+        #toggle paused bool
+        self.paused = not self.paused
 
     def animate_overlay(self, i):
         
@@ -102,17 +120,6 @@ class LivePlotter():
             plt.title(f"Live Overlay")
             plt.plot(x, y, label = ycol)
             plt.legend(loc='best')
-            
-        
-        # #plot overlay
-        # plt.cla()
-        # plt.xlabel(str(xcol))
-        # plt.ylabel(str(ycol))
-        # plt.title(f"Live Overlay")
-        # for file in fdict:
-        #     plt.plot(x[file], y[file], label= namedict[file])
-        #     plt.legend(loc='best')
-        #     plt.tight_layout()
 
     def start_plot(self):
         if self.overlay_bool == False:
