@@ -23,14 +23,12 @@ enamldef Main(Window): window:
                 hbox(lbl1, fld1, pb1, lbl2, fld2, lbl3, fld3, pb2, lbl4, oc1, pb3, clearbtn),
                 sep,
                 hbox(vg1, vg2, vg3),
-                #hbox(clearbtn),
             ),
 
             width == 1000,
             align('v_center', lbl1, fld1, pb1, lbl2, fld2, lbl3, fld3, pb2, lbl4, oc1, pb3, clearbtn),
             contents_top == lbl1.top,
             contents_left == lbl1.left,
-            #contents_right == pb3.right,
             fld1.width == 0.30 * width,
             fld2.width == 0.05 * width,
             fld3.width == 0.05 * width,
@@ -39,23 +37,8 @@ enamldef Main(Window): window:
             pb3.height == fld2.height,
 
             align('width', pb1, pb2, pb3, oc1, clearbtn),
-            #align('v_center', filelistlbl, xlistlbl, ylistlbl, clearbtn),
-            #filelistlbl.width == width * .2,
-            #xlistlbl.width == width * .3,
-            #ylistlbl.width == width * .3,
-            #clearbtn.width == pb3.width,
 
             align('height', vg1, vg2, vg3),
-            #vg1.left == contents_left,
-            #vg1.width == 0.60 * width,
-            #vg2.width == 0.18 * width,
-            #vg3.width == 0.18 * width,
-            #align('height', inc1.objects, inc4.objects)
-            #vg1.right == xlistlbl.left,
-            #vg1.right == fld3.right,
-            #vg2.left == xlistlbl.left,
-            #vg3.right == pb3.right,
-            #vg4.right == contents_right,
 
             align('right', clearbtn),
 
