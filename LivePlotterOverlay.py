@@ -16,7 +16,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import time
-
+from matplotlib.dates import DateFormatter
 from csv import writer
 from multiprocessing import Process
 import os
@@ -50,12 +50,17 @@ class LivePlotter():
         #allow plot to pause on click
         fig.canvas.mpl_connect('button_press_event', self.toggle_pause)
 
-        plt.tight_layout()
+        #plt.tight_layout()
+        
         plt.show()
 
     def animate(self, i):
-        
         data = pd.read_csv(f, sep = '\t')
+        
+        #it turns out that matplotlib can plot datetimes easily. Just take the
+        #string datetimes from the file and convert them to datetime objects.
+        data[xcol] = pd.to_datetime(data[xcol], format = "%Y-%m-%d %H:%M:%S")
+        
         x = data[xcol]
         y = data[ycol]
 
@@ -64,6 +69,14 @@ class LivePlotter():
         plt.ylabel(str(ycol))
         plt.title(f"Live plot: {fname}")
         plt.plot(x, y)
+        
+        
+        #this line sets the dates so that they are at an angle for readability
+        plt.gcf().autofmt_xdate()
+
+        date_form = date_form = DateFormatter("%m-%d %H:%M")
+        plt.gca().xaxis.set_major_formatter(date_form)
+
         plt.tight_layout()
 
     def start_overlay(self):
