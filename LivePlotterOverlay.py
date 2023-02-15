@@ -74,7 +74,7 @@ class LivePlotter():
         #this line sets the dates so that they are at an angle for readability
         plt.gcf().autofmt_xdate()
 
-        date_form = date_form = DateFormatter("%m-%d %H:%M")
+        date_form = date_form = DateFormatter("%m/%d %H:%M")
         plt.gca().xaxis.set_major_formatter(date_form)
 
         plt.tight_layout()
