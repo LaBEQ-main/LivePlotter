@@ -7,9 +7,12 @@ from enaml.widgets.api import (
 )
 from enaml.core.api import Include
 
+import csv
+
 enamldef Main(Window): window:
     attr plotter
     attr path : str = ""
+    attr headers = []
     attr X = ""
     attr Y = ""
     attr pair = ()
@@ -20,42 +23,25 @@ enamldef Main(Window): window:
     Container: c1:
         constraints = [
             vbox(
-                hbox(lbl1, fld1, pb1, lbl2, fld2, lbl3, fld3, pb2, lbl4, oc1, pb3, clearbtn),
+                hbox(lbl1, fld1, pb1, lbl2, ocx, lbl3, ocy, pb2, lbl4, oc1, pb3, clearbtn),
                 sep,
                 hbox(vg1, vg2, vg3),
-                #hbox(clearbtn),
             ),
 
             width == 1000,
-            align('v_center', lbl1, fld1, pb1, lbl2, fld2, lbl3, fld3, pb2, lbl4, oc1, pb3, clearbtn),
+            align('v_center', lbl1, fld1, pb1, lbl2, ocx, lbl3, ocy, pb2, lbl4, oc1, pb3, clearbtn),
             contents_top == lbl1.top,
             contents_left == lbl1.left,
-            #contents_right == pb3.right,
             fld1.width == 0.30 * width,
-            fld2.width == 0.05 * width,
-            fld3.width == 0.05 * width,
+            ocx.width == 0.10 * width,
+            ocy.width == 0.10 * width,
             pb1.height == fld1.height,
-            pb2.height == fld2.height,
-            pb3.height == fld2.height,
+            pb2.height == ocx.height,
+            pb3.height == ocx.height,
 
             align('width', pb1, pb2, pb3, oc1, clearbtn),
-            #align('v_center', filelistlbl, xlistlbl, ylistlbl, clearbtn),
-            #filelistlbl.width == width * .2,
-            #xlistlbl.width == width * .3,
-            #ylistlbl.width == width * .3,
-            #clearbtn.width == pb3.width,
 
             align('height', vg1, vg2, vg3),
-            #vg1.left == contents_left,
-            #vg1.width == 0.60 * width,
-            #vg2.width == 0.18 * width,
-            #vg3.width == 0.18 * width,
-            #align('height', inc1.objects, inc4.objects)
-            #vg1.right == xlistlbl.left,
-            #vg1.right == fld3.right,
-            #vg2.left == xlistlbl.left,
-            #vg3.right == pb3.right,
-            #vg4.right == contents_right,
 
             align('right', clearbtn),
 
@@ -72,19 +58,27 @@ enamldef Main(Window): window:
             text = 'Browse'
             clicked ::
                 path = FileDialogEx.get_open_file_name(window)
-                if path:
-                    #path initially returned with single forward slashes, need to replace with double back slash
-                    path = plotter.convertfilepath(path)
-                    window.path = path
+                
+                #path initially returned with single forward slashes, need to replace with double back slash
+                path = plotter.convertfilepath(path)
+                window.path = path
+
+                #get headers of currently selected file to populate the X and Y drop down lists.
+                with open(path, newline='') as file:
+                    reader = csv.reader(file, delimiter = '\t')
+                    window.headers = next(reader) 
+                    
         Label: lbl2:
             text = 'X:'
-        Field: fld2:
-            text := window.X
+        ObjectCombo: ocx:
+            items << window.headers
+            selected := window.X
 
         Label: lbl3:
             text = 'Y:'
-        Field: fld3:
-            text := window.Y
+        ObjectCombo: ocy:
+            items << window.headers
+            selected := window.Y
 
         PushButton: pb2:
             text = 'Add'
