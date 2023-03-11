@@ -30,7 +30,7 @@ index = count()
 
 class LivePlotter():
     plotlist = []
-    overlay_bool = bool
+    overlay_bool = False
     paused = False
 
     def convertfilepath(self, filepath):
