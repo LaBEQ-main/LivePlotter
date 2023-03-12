@@ -113,15 +113,15 @@ enamldef Main(Window): window:
                     checked >> plotter.overlay_bool
 
                 Label: cb_lbl:
-                    text = "By column values"
+                    text = "By column values:"
                 CheckBox: by_value_checkbox:
-                    checked >> window.overlay_by_col_val
+                    checked >> plotter.overlay_by_col_val
                     
             Conditional:
                 condition << by_value_checkbox.checked 
                 ObjectCombo: overlay_column:
                     items << window.headers
-                    selected := window.overlay_col
+                    selected := plotter.overlay_col
         
         PushButton: plot_button:
                 text = 'Plot'

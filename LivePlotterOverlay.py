@@ -31,6 +31,8 @@ index = count()
 class LivePlotter():
     plotlist = []
     overlay_bool = False
+    overlay_by_col_val = False
+    overlay_col = ""
     paused = False
 
     def convertfilepath(self, filepath):
