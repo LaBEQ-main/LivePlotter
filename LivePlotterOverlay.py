@@ -105,23 +105,52 @@ class LivePlotter():
     def animate_overlay(self, i):
         
         plt.cla()
-        #get new data from each file and plot all on the same graph
-        for filepair in plist:
-            file = filepair[0]
-            vars = filepair[1]
-            data = pd.read_csv(file, sep = '\t')
-            xcol = vars[0]
-            ycol = vars[1]
-            x = data[xcol]
-            y = data[ycol]
 
-            #plot overlay
-            plt.tight_layout()
-            plt.xlabel(str(xcol))
-            plt.ylabel(str(ycol))
-            plt.title(f"Live Overlay")
-            plt.plot(x, y, label = ycol)
-            plt.legend(loc='best')
+        if self.overlay_by_col_val == True:
+            for filepair in plist:
+                file = filepair[0]
+                vars = filepair[1]
+                xcol = vars[0]
+                ycol = vars[1]
+                data = pd.read_csv(file, sep = '\t')
+
+                overlay_val_list = data[self.overlay_col].unique()
+                print(overlay_val_list)
+
+                #gather list of datasets at each unique column value
+                data_list = []
+                for val in overlay_val_list:
+                    plotdata = data[data[self.overlay_col] == val]
+                
+                    x = plotdata[xcol]
+                    y = plotdata[ycol]
+
+                    #plot overlay
+                    plt.tight_layout()
+                    plt.xlabel(str(xcol))
+                    plt.ylabel(str(ycol))
+                    plt.title(f"Live Overlay")
+                    plt.plot(x, y, label = val)
+                    plt.legend(loc='best')
+
+        else:
+            #get new data from each file and plot all on the same graph
+            for filepair in plist:
+                file = filepair[0]
+                vars = filepair[1]
+                data = pd.read_csv(file, sep = '\t')
+                xcol = vars[0]
+                ycol = vars[1]
+                x = data[xcol]
+                y = data[ycol]
+
+                #plot overlay
+                plt.tight_layout()
+                plt.xlabel(str(xcol))
+                plt.ylabel(str(ycol))
+                plt.title(f"Live Overlay")
+                plt.plot(x, y, label = ycol)
+                plt.legend(loc='best')
 
     def start_plot(self):
         if self.overlay_bool == False:
