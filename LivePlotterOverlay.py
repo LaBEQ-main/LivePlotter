@@ -114,10 +114,10 @@ class LivePlotter():
                 ycol = vars[1]
                 data = pd.read_csv(file, sep = '\t')
 
+                # gather list of unique column values over which data was collected.
                 overlay_val_list = data[self.overlay_col].unique()
-                print(overlay_val_list)
 
-                #gather list of datasets at each unique column value
+                # gather list of datasets at each unique column value
                 data_list = []
                 for val in overlay_val_list:
                     plotdata = data[data[self.overlay_col] == val]
@@ -131,7 +131,7 @@ class LivePlotter():
                     plt.ylabel(str(ycol))
                     plt.title(f"Live Overlay")
                     plt.plot(x, y, label = val)
-                    plt.legend(loc='best')
+                    plt.legend(loc='best', title = self.overlay_col)
 
         else:
             #get new data from each file and plot all on the same graph
