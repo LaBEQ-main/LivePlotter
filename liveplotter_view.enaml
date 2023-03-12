@@ -4,9 +4,9 @@ from enaml.layout.api import vbox, hbox, align
 from enaml.widgets.api import (
     Container, Field, FileDialogEx, Label, PushButton, Window,
     ObjectCombo, MultilineField, HGroup, VGroup, Separator, CheckBox,
-    GroupBox, Form
+    GroupBox, Form, 
 )
-from enaml.core.api import Include
+from enaml.core.api import Include, Conditional
 
 import csv
 
@@ -16,6 +16,8 @@ enamldef Main(Window): window:
     attr headers = []
     attr X = ""
     attr Y = ""
+    attr overlay_by_col_val
+    attr overlay_col = ""
     attr pair = ()
     attr plotlist = []
     attr fcount = 0
@@ -24,34 +26,23 @@ enamldef Main(Window): window:
     Container: c1:
         constraints = [
             vbox(
-                hbox(file_selection_options, header_options, overlay_options, plot_button, clear_btn),
+                hbox(file_selection_options, header_options, overlay_options, vbox(plot_button, clear_btn)),
                 sep,
                 hbox(vg1, vg2, vg3),
             ),
 
-            width == 1000,
-            file_selected_field.width == 0.250 * width,
-            x_header_selection.width == 0.250 * width,
-            # x_header_selection.width == 50,
-            # header_options.width == 0.25*width,
-            # align('v_center', file_label, file_selected_field, browse_button, plot_button, clear_btn),
+            width == 800,
+            file_selection_form.width == 0.30 * width,
+            x_header_selection.width == 0.15 * width,
+            overlay_form.width == 0.20 * width,
+
             # contents_top == file_label.top,
             # contents_left == file_label.left,
-            # file_selected_field.width == 0.10 * width,
-            # overlay_options.top == contents_top,
-            # print(x_header_selection.width),
-            # browse_button.height == file_selected_field.height,
-            # add_button.height == x_header_selection.height,
-            # plot_button.height == x_header_selection.height,
 
-            align('top', contents_top, file_selection_options, header_options, overlay_options,
-                        plot_button, clear_btn),
 
-            # align('width', file_selection_options, header_options, overlay_options),
-
+            align('top', contents_top, file_selection_options, header_options, overlay_options, plot_button),
+            
             align('height', vg1, vg2, vg3),
-
-            # align('right', clear_btn),
 
        
            
@@ -63,7 +54,6 @@ enamldef Main(Window): window:
 
             Form: file_selection_form:
                 share_layout = True
-                # constraints = [file_selected_field.width == 0.05 * width]
 
                 Label: file_label:
                     text = 'File:'
@@ -102,7 +92,7 @@ enamldef Main(Window): window:
                     selected := window.Y
 
             PushButton: add_button:
-                text = 'Add'
+                text = 'Add to plot list'
                 clicked ::
 
                     window.fcount = window.fcount + 1
@@ -124,8 +114,14 @@ enamldef Main(Window): window:
 
                 Label: cb_lbl:
                     text = "By column values"
-                CheckBox: cb:
-                    checked :: print('test')
+                CheckBox: by_value_checkbox:
+                    checked >> window.overlay_by_col_val
+                    
+            Conditional:
+                condition << by_value_checkbox.checked 
+                ObjectCombo: overlay_column:
+                    items << window.headers
+                    selected := window.overlay_col
         
         PushButton: plot_button:
                 text = 'Plot'
@@ -150,7 +146,7 @@ enamldef Main(Window): window:
             spacing = 2
             padding = 0
             Label: filelistlbl:
-                text = "Files to plot:"
+                text = "Plot list:"
             Include: inc1:
                 objects = []
 
