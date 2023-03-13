@@ -115,7 +115,6 @@ class LivePlotter():
                 data = pd.read_csv(file, sep = '\t')
 
                 overlay_val_list = data[self.overlay_col].unique()
-                print(overlay_val_list)
 
                 #gather list of datasets at each unique column value
                 data_list = []
