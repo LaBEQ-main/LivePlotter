@@ -131,7 +131,7 @@ class LivePlotter():
                     plt.ylabel(str(ycol))
                     plt.title(f"Live Overlay")
                     plt.plot(x, y, label = val)
-                    plt.legend(loc='best')
+                    plt.legend(loc='best', title = self.overlay_col)
 
         else:
             #get new data from each file and plot all on the same graph
