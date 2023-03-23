@@ -9,7 +9,7 @@
 #
 # The full license is in the file LICENCE, distributed with this software.
 # -----------------------------------------------------------------------------
-# import random
+
 from cProfile import label
 from itertools import count
 import pandas as pd

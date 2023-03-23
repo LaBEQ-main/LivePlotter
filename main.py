@@ -13,7 +13,7 @@
 import enaml
 from enaml.qt.qt_application import QtApplication
 
-from LivePlotterOverlay import LivePlotter
+from liveplotter_driver import LivePlotter
 
 
 if __name__ == '__main__':
