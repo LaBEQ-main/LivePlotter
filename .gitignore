@@ -1,3 +1,8 @@
 
-*.enamlc
-*.pyc
+__enamlcache__/
+__pycache__/
+.vscode/
+Test code/
+Test Data/
+
+
